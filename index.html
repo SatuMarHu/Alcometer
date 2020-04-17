@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Alcometer</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <!-- Opiskelija: Satu Husso
+Kurssi: H2C React-kurssi -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body style="background-color: powderblue;">
+    <div id="root"></div>
+    <script type="text/babel">
+      class Alcometer extends React.Component {
+        constructor(props) {
+          super(props);
+
+          this.state = {
+            weight: 80,
+            bottles: 1,
+            hours: 1,
+            gender: "male",
+            amount: 0,
+          };
+        }
+
+        handleChange = (event) => {
+          this.setState({ [event.target.name]: event.target.value });
+        };
+
+        handleSubmit = (event) => {
+          const { weight, bottles, hours, gender } = this.state;
+          let litre = bottles * 0.33;
+          let grams = litre * 8 * 4.5;
+          let burning = weight / 10;
+          let gramsLeft = grams - burning * hours;
+
+          let amount;
+          if (gender === "male") {
+            amount = gramsLeft / (weight * 0.7);
+          } else {
+            amount = gramsLeft / (weight * 0.6);
+          }
+          this.setState({ amount });
+          event.preventDefault();
+        };
+
+        fillAmountOfBottle() {
+          const bottles = [];
+          for (let i = 1; i <= 50; i++) {
+            bottles.push(
+              <option key={i} value={i}>
+                {i} bottles
+              </option>
+            );
+          }
+          return bottles;
+        }
+
+        fillTime() {
+          const hours = [];
+          for (let i = 1; i <= 24; i++) {
+            hours.push(
+              <option key={i} value={i}>
+                {i} hours
+              </option>
+            );
+          }
+          return hours;
+        }
+
+        render() {
+          const { weight, bottles, hours, gender, amount } = this.state;
+          return (
+            <>
+              <h3 class="alert alert-danger">
+                Calculating alcohol blood level
+              </h3>
+              <form onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                  <label>Weight</label>
+                  <input
+                    name="weight"
+                    type="number"
+                    step="1"
+                    className="form-control"
+                    value={weight}
+                    onChange={this.handleChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Bottles</label>
+                  <select
+                    name="bottles"
+                    className="form-control"
+                    value={bottles}
+                    onChange={this.handleChange}
+                  >
+                    {this.fillAmountOfBottle()}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Time</label>
+                  <select
+                    name="hours"
+                    className="form-control"
+                    value={hours}
+                    onChange={this.handleChange}
+                  >
+                    {this.fillTime()}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Gender</label>
+
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={gender === "male"}
+                    defaultChecked
+                    onChange={this.handleChange}
+                  />
+
+                  <label>Male</label>
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={gender === "female"}
+                    onChange={this.handleChange}
+                  />
+                  <label>Female</label>
+                </div>
+
+                <div>
+                  <output>{amount.toFixed(1)}</output>
+                </div>
+
+                <button class="btn btn-warning">Amount</button>
+              </form>
+            </>
+          );
+        }
+      }
+
+      ReactDOM.render(<Alcometer />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
